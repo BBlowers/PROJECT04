@@ -1,0 +1,10 @@
+<h1>login</h1>
+
+<form ng-submit="login.submit()">
+  <input type="text" name="email" ng-model="login.credentials.email">
+  <input type="password" name="password" ng-model="login.credentials.password">
+
+  <button>Submit</button>
+</form>
+
+<a ui-sref="register">Or register</a>

@@ -1,0 +1,14 @@
+<form ng-submit="gamePostsNew.create()">
+  <input type="text" name="name" ng-model="gamePostsNew.new.name" placeholder="Name">
+  
+  <input type="file" file name="image" ng-model="gamePostsNew.new.image" placeholder="Image">
+  
+  <input type="date" date name="releaseDate" ng-model="gamePostsNew.new.releaseDate" placeholder="Release date">
+
+  <select name="platform" ng-model="gamePostsNew.new.platform">
+    <option disabled selected value="">Please select</option>
+    <option ng-repeat="platform in gamePostsNew.platforms" ng-value="platform._id">{{platform.abbreviation}}</option>
+  </select>
+
+  <button>Save</button>
+</form>

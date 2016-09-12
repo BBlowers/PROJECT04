@@ -1,0 +1,7 @@
+<ul>
+  <li ng-repeat="gamePost in gamePostsIndex.all" ui-sref="gamePostsShow({ id: gamePost._id })">
+    {{ gamePost }}
+  </li>
+</ul>
+
+<button ui-sref="gamePostsNew">Add</button>

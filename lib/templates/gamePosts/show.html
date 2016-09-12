@@ -1,0 +1,7 @@
+<h3>{{ gamePostsShow.selected.name }}</h3>
+<h3>{{ gamePostsShow.selected.platform }}</h3>
+<h3>{{ gamePostsShow.selected.genres }}</h3>
+
+<img ng-repeat="picture in gamePostsShow.selected.pictures" ng-src="{{ picture }}">
+
+<button ui-sref="gamePostsEdit({ id: gamePostsShow.selected._id })">Edit</button>

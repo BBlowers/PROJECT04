@@ -1,0 +1,13 @@
+<h1>register</h1>
+
+<form ng-submit="register.submit()">
+  <input type="text" placeholder="username" name="username" ng-model="register.newUser.username">
+  <input type="text" placeholder="email" name="email" ng-model="register.newUser.email">
+  <input type="text" placeholder="profile pic" name="profilePic" ng-model="register.newUser.profilePic">
+  <input type="password" placeholder="password" name="password" ng-model="register.newUser.password">
+  <input type="password" placeholder="password confirmation" name="passwordConfirmation" ng-model="register.newUser.passwordConfirmation">
+
+  <button>Submit</button>
+</form>
+
+<a ui-sref="login">Or login</a>
