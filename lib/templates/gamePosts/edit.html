@@ -1,12 +1,11 @@
 <form ng-submit="gamePostsEdit.save()">
   <input type="text" name="name" ng-model="gamePostsEdit.selected.name" placeholder="Name">
-  <input type="text" name="pictures" ng-model="gamePostsEdit.selected.pictures" placeholder="Pictures">
-  
-  <!-- <input type="file" file name="image" ng-model="gamePostsEdit.selected.image" placeholder="Image"> -->
-  
-  <!-- <input type="date" date name="releaseDate" ng-model="gamePostsEdit.selected.releaseDate" placeholder="Release date"> -->
 
-  <h3><span ng-repeat="genre in gamePostsEdit.selected.genres" ng-click="gamePostsEdit.removeGenre(genre)">{{ genre.abbreviation }} x </span></h3>
+  <input type="file" file name="pictures" ng-model="gamePostsEdit.selected.pictures" placeholder="pictures" multiple>
+
+  <input type="date" date name="releaseDate" ng-model="gamePostsEdit.selected.releaseDate" placeholder="Release date">
+
+  <h3><span ng-repeat="genre in gamePostsEdit.selectedGenres" ng-click="gamePostsEdit.removeGenre(genre)">{{ genre.abbreviation }} x </span></h3>
 
   <div ng-repeat="genre in gamePostsEdit.genres">
     <button type="button" ng-click="gamePostsEdit.addGenre(genre)">{{ genre }}</button>

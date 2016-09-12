@@ -8,6 +8,8 @@ var platformsController = require('../controllers/platforms');
 var jwt = require('jsonwebtoken');
 var secret = require('./tokens').secret;
 
+var upload = require('./upload');
+
 function secureRoute(req, res, next) {
   if(!req.headers.authorization) return res.status(401).json({ message: "Unauthorized" });
 
@@ -32,7 +34,7 @@ router.route('/platforms')
 
 router.route('/game_posts')
   .get(gamePostsController.index)
-  .post(gamePostsController.create);
+  .post(upload.array('pictures'), gamePostsController.create);
   // .post(secureRoute, gamePostsController.create);
 
 router.route('/game_posts/:id')

@@ -1,9 +1,15 @@
 <form ng-submit="gamePostsNew.create()">
   <input type="text" name="name" ng-model="gamePostsNew.new.name" placeholder="Name">
   
-  <input type="file" file name="image" ng-model="gamePostsNew.new.image" placeholder="Image">
+  <input type="file" file name="pictures" ng-model="gamePostsNew.new.pictures" placeholder="pictures" multiple>
   
   <input type="date" date name="releaseDate" ng-model="gamePostsNew.new.releaseDate" placeholder="Release date">
+
+  <h3><span ng-repeat="genre in gamePostsNew.selectedGenres" ng-click="gamePostsNew.removeGenre(genre)">{{ genre.abbreviation }} x </span></h3>
+
+  <div ng-repeat="genre in gamePostsNew.genres">
+    <button type="button" ng-click="gamePostsNew.addGenre(genre)">{{ genre }}</button>
+  </div>
 
   <select name="platform" ng-model="gamePostsNew.new.platform">
     <option disabled selected value="">Please select</option>

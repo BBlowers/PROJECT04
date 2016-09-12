@@ -53,28 +53,6 @@ gulp.task('sass', function() {
     .pipe(gulp.dest('public/css'));
 });
 
-gulp.task('default', function() {
-  livereload.listen();
-
-  gulp.watch(['lib/**/**', 'lib/**/**/**', 'lib/**/**/**/**', 'public/index.html', 'public/templates/**', 'public/templates/**/**'], function() {
-    runSeq(['concat', 'sass', 'copy'], function() {
-      livereload.reload('public/index.html');
-    });
-  });
-
-  gulp.watch('bower.json', function() {
-    runSeq('bower', function() {
-      livereload.reload('public/index.html');
-    });
-  });
-
-  gulp.src(['public/index.html'])
-    .pipe(replace('app.min.css', 'app.css'))
-    .pipe(replace('app.min.js', 'app.js'))
-    .pipe(gulp.dest('public/'));
-
-});
-
 gulp.task('copy', function() {
   gulp.src('lib/templates/**/**')
     .pipe(gulp.dest('public/templates'));
@@ -103,6 +81,30 @@ gulp.task('replace:prod', function(){
     .pipe(replace('app.css', 'app.min.css'))
     .pipe(replace('app.js', 'app.min.js'))
     .pipe(gulp.dest('public/'));
+});
+ 
+gulp.task('replace:dev', function(){
+  gulp.src(['public/index.html'])
+    .pipe(replace('app.min.css', 'app.css'))
+    .pipe(replace('app.min.js', 'app.js'))
+    .pipe(gulp.dest('public/'));
+});
+
+gulp.task('default', ['replace:dev'], function() {
+  livereload.listen();
+
+  gulp.watch(['lib/**/*', 'public/index.html', 'public/templates/**'], function() {
+    runSeq(['concat', 'sass', 'copy'], function() {
+      livereload.reload('public/index.html');
+    });
+  });
+
+  gulp.watch('bower.json', function() {
+    runSeq('bower', function() {
+      livereload.reload('public/index.html');
+    });
+  });
+
 });
 
 gulp.task('build', function() {

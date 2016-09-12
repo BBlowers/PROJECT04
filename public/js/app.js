@@ -112,14 +112,40 @@ function RegisterController($auth, $state, $rootScope) {
   }
 }
 angular
+  .module('RetroGames')
+  .directive('file', file);
+
+function file() {
+  return {
+    restrict: 'A',
+    require: "ngModel",
+    link: function(scope, element, attrs, ngModel) {
+      element.on('change', function(e) {
+        if(element.prop('multiple')) {
+          ngModel.$setViewValue(e.target.files);
+        } else {
+          ngModel.$setViewValue(e.target.files[0]);
+        }
+      });
+    }
+  }
+}
+angular
   .module("RetroGames")
   .factory("GamePost", GamePost);
 
-GamePost.$inject = ["$resource"];
-function GamePost($resource) {
+GamePost.$inject = ["$resource", "formData"];
+function GamePost($resource, formData) {
   return $resource('/api/game_posts/:id', { id: '@_id' },  {
     update: {
-      method: "PUT"
+      method: "PUT",
+      headers: { 'Content-Type': undefined },
+      transformRequest: formData.transform
+    },
+    save: {
+      method: "POST",
+      headers: { 'Content-Type': undefined },
+      transformRequest: formData.transform
     }
   });
 }
@@ -161,13 +187,39 @@ function User($resource) {
 }
 angular
   .module('RetroGames')
+  .factory('formData', formData);
+
+function formData() {
+  return {
+    transform: function(data) {
+      var formData = new FormData();
+      angular.forEach(data, function(value, key) {
+        if(value._id) value = value._id;
+        if(!key.match(/^\$/)) {
+
+          if(value instanceof FileList) {
+            for(i=0;i<value.length;i++) {
+              formData.append(key, value[i]);
+            }
+          } else {
+            formData.append(key, value);
+          }
+        }
+      });
+
+      return formData;
+    }
+  }
+}
+angular
+  .module('RetroGames')
   .controller("GamePostsEditController", GamePostsEditController);
 
 GamePostsEditController.$inject = ["GamePost", "Platform", "Genre", "$state"];
 function GamePostsEditController(GamePost, Platform, Genre, $state) {
 
   var self = this;
-  self.selectedGenres = [];
+  this.selectedGenres = [];
 
   this.selected = GamePost.get($state.params, function(data) {
     self.selectedGenres = data.genres;
@@ -190,7 +242,9 @@ function GamePostsEditController(GamePost, Platform, Genre, $state) {
   }
 
   this.save = function() {
-    this.selected.genres = this.selectedGenres;
+    this.selected.genres = this.selectedGenres.map(function(genre) {
+      return genre._id;
+    });
     this.selected.$update(function() {
       $state.go('gamePostsShow', $state.params);
     });
@@ -210,13 +264,33 @@ angular
 
 GamePostsNewController.$inject = ["GamePost","Platform", "Genre", "$state"];
 function GamePostsNewController(GamePost, Platform, Genre, $state) {
+  var self = this;
   this.new = {};
   this.genres = Genre.query();
   this.platforms = Platform.query();
 
+  this.selectedGenres = [];
+
+  this.removeGenre = function(genre) {
+    this.selectedGenres.splice(
+      this.selectedGenres.indexOf(genre), 1);
+  }
+
+  this.addGenre = function(genre) {
+    if (self.selectedGenres.length > 0) {
+      for(var i = 0; i < self.selectedGenres.length; i++) {
+        if(self.selectedGenres[i]._id === genre._id) return null;
+      }
+    }
+    self.selectedGenres.push(genre);
+  }
+
   this.create = function() {
+    this.new.genres = this.selectedGenres.map(function(genre) {
+      return genre._id;
+    });
     GamePost.save(this.new, function() {
-      $state.go('filmsIndex');
+      $state.go('gamePostsIndex');
     });
   }
 }

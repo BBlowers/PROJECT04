@@ -24,6 +24,11 @@ function gamePostShow(req, res) {
 }
 
 function gamePostCreate(req, res) {
+
+  req.body.pictures = Object.keys(req.files).map(function(key) {
+    return req.files[key].key;
+  });
+
   GamePost.create(req.body)
     .then(function(gamePost) {
       return GamePost.findById(gamePost._id)
@@ -33,11 +38,17 @@ function gamePostCreate(req, res) {
       res.status(201).json(gamePost);
     })
     .catch(function(err) {
+      console.log("err: ", err);
       res.status(500).json(err);
     });
 }
 
 function gamePostUpdate(req, res) {
+  console.log("req.body.pictures", req.body.pictures);
+  req.body.pictures.concat(Object.keys(req.files).map(function(key) {
+    return req.files[key].key;
+  }));
+
   GamePost.findById(req.params.id)
     .then(function(gamePost) {
       for(key in req.body) gamePost[key] = req.body[key];

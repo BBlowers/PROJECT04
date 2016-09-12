@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var bcrypt = require('bcrypt');
+var s3 = require('../config/s3');
 
 var gamePostSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -9,6 +9,18 @@ var gamePostSchema = new mongoose.Schema({
   genres: [{ type: mongoose.Schema.ObjectId, ref: 'Genre' }],
   releaseDate: Date
 });
+
+gamePostSchema.path('pictures')
+  .get(function(pictures) {
+    return pictures.map(function(picture) {
+      return s3.endpoint.href + process.env.AWS_BUCKET_NAME + "/" + picture;
+    });
+  })
+  .set(function(pictures) {
+    return pictures.map(function(picture) {
+      return picture.split('/').splice(-1)[0];
+    });
+  });
 
 
 gamePostSchema.pre('save', function(next) {
@@ -41,5 +53,7 @@ gamePostSchema.pre('remove', function(next) {
       next();
     });
 });
+
+gamePostSchema.set('toJSON', { getters: true });
 
 module.exports = mongoose.model('GamePost', gamePostSchema);
