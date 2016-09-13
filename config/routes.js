@@ -4,6 +4,7 @@ var authController = require('../controllers/auth');
 var gamePostsController = require('../controllers/gamePosts');
 var genresController = require('../controllers/genres');
 var platformsController = require('../controllers/platforms');
+var roomsController = require('../controllers/rooms');
 
 var jwt = require('jsonwebtoken');
 var secret = require('./tokens').secret;
@@ -35,12 +36,20 @@ router.route('/platforms')
 router.route('/game_posts')
   .get(gamePostsController.index)
   .post(upload.array('pictures'), gamePostsController.create);
-  // .post(secureRoute, gamePostsController.create);
 
 router.route('/game_posts/:id')
   .get(gamePostsController.show)
-  .put(gamePostsController.update)
-  // .put(secureRoute, gamePostsController.update)
-  .delete(secureRoute, gamePostsController.delete);
+  .delete(gamePostsController.delete)
+  .put(upload.array('pictures'),
+    gamePostsController.update);
+
+router.route('/rooms')
+  .get(roomsController.index)
+  .post(roomsController.create);
+
+router.route('/rooms/:id')
+  .get(roomsController.show)
+  .delete(roomsController.delete)
+  .put(roomsController.update);
 
 module.exports = router;

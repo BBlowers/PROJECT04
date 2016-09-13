@@ -1,0 +1,7 @@
+<ul>
+  <li ng-repeat="room in roomsIndex.all" ui-sref="roomsShow({ id: room._id })">
+    {{ room }}
+  </li>
+</ul>
+
+<button ui-sref="roomsNew">Add</button>

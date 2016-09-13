@@ -2,11 +2,12 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 
 var userSchema = new mongoose.Schema({
-  username: String,
-  email: String,
+  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
   profilePic: String,
   passwordHash: String,
-  gamePosts: [{ type: mongoose.Schema.ObjectId, ref: 'GamePost' }]
+  gamePosts: [{ type: mongoose.Schema.ObjectId, ref: 'GamePost' }],
+  conversations: []
 });
 
 userSchema.virtual('password')

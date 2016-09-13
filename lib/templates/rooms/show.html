@@ -1,0 +1,20 @@
+<h3>{{ roomsShow.selected.name }}</h3>
+
+<!-- <p ng-repeat="message in roomsShow.selected.messages">{{ message }}</p>
+
+<form ng-submit="roomsShow.sendMessage()">
+  <input type="text" name="messageContents" ng-model="roomsNew.new.messageContents" placeholder="Name">
+  <button>Send</button>
+</form>
+
+<button ui-sref="gamePostsEdit({ id: gamePostsShow.selected._id })">Edit</button>
+
+ -->
+<ul>
+  <li ng-repeat="message in roomsShow.allMessages track by $index">{{ message }}</li>
+</ul>
+
+<form ng-submit="roomsShow.sendMessage()">
+  <input type="text" ng-model="roomsShow.message">
+  <button>Send</button>
+</form>

@@ -44,8 +44,8 @@ function gamePostCreate(req, res) {
 }
 
 function gamePostUpdate(req, res) {
-  console.log("req.body.pictures", req.body.pictures);
-  req.body.pictures.concat(Object.keys(req.files).map(function(key) {
+  console.log("req.body: ", req.body);
+  req.body.pictures = req.body.pictures.toString().split(",").concat(Object.keys(req.files).map(function(key) {
     return req.files[key].key;
   }));
 

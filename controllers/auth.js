@@ -6,7 +6,6 @@ function login(req, res) {
   User.findOne({ email: req.body.email }, function(err, user) {
     if(err) res.send(500).json(err);
     if(!user || !user.validatePassword(req.body.password)) {
-      console.log("user is: ", user);
       return res.status(401).json({ message: "Invalid credentials" });
     }
 

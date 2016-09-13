@@ -164,28 +164,28 @@ Genre.create([{
       GamePost.create([{
         name: "Sonic the Hedgehog 2",
         owner: users[0],
-        pictures: ["http://www.hardcoregamer.com/wp-content/uploads/2015/10/Sonic-2-1.jpg", "https://lh5.ggpht.com/PYenvBD0jyeXaFy7tfd1-DajFXeWLtgFj9LxLx7rlbHZAzOxokDD7JgaO-XZST1CmC4=h900", "http://www.rarityguide.com/museum/images/video_game_consoles/sega_genesis__1989_/sega_genesis_sonic_hedgehog_2_cart.JPG"],
+        pictures: ["Sonic-2-1.jpg", "PYenvBD0jyeXaFy7tfd1-DajFXeWLtgFj9LxLx7rlbHZAzOxokDD7JgaO-XZST1CmC4=h900", "sega_genesis_sonic_hedgehog_2_cart.JPG"],
         platform: platforms[24],
         genres: genres[2],
         releaseDate: new Date(1992, 11, 21)
       },{
         name: "Crash Team Racing",
         owner: users[1],
-        pictures: ["http://www.justgovintage.com/images/PS1-GAME-CTR%20Crash%20Team%20Racing.JPG", "https://i.ytimg.com/vi/q5RyvAB2bTY/maxresdefault.jpg", "http://199.101.98.242/media/images/36718-Crash_Team_Racing_[U]-16.jpg", "https://upload.wikimedia.org/wikipedia/en/4/4f/CrashTeamRacingNACover.png"],
+        pictures: ["PS1-GAME-CTR%20Crash%20Team%20Racing.JPG", "maxresdefault.jpg", "36718-Crash_Team_Racing_[U]-16.jpg", "CrashTeamRacingNACover.png"],
         platform: platforms[19],
         genres: genres[3],
         releaseDate: new Date(1999, 9, 30)
       },{
         name: "Pokémon Red",
         owner: users[1],
-        pictures: ["http://cdn.bulbagarden.net/upload/thumb/8/80/Red_EN_boxart.png/250px-Red_EN_boxart.png", "http://s.ecrater.com/stores/134698/4b257d1203914_134698b.jpg", "http://noticias.instacodez.com/wp-content/uploads/2015/11/Pok%C3%A9mon-131115-001.jpg"],
+        pictures: ["250px-Red_EN_boxart.png", "4b257d1203914_134698b.jpg", "Pok%C3%A9mon-131115-001.jpg"],
         platform: platforms[22],
         genres: genres[1],
         releaseDate: new Date(1999, 10, 5)
       },{
         name: "Super Smash Bros",
         owner: users[0],
-        pictures: ["http://thumbs3.picclick.com/d/w1600/pict/201631802526_/Super-Smash-Bros-Brothers-Nintendo-64-N64-Nrmt.jpg", "http://www.wtfgamersonly.com/wp-content/uploads/2014/08/n64_supersmashbrothers64.jpg", "https://i.ytimg.com/vi/X8QpVtb3sl0/maxresdefault.jpg", "http://www.androidheadlines.com/wp-content/uploads/2013/03/n64_super_smash_bros.jpg"],
+        pictures: ["Super-Smash-Bros-Brothers-Nintendo-64-N64-Nrmt.jpg", "n64_supersmashbrothers64.jpg", "n64_super_smash_bros.jpg"],
         platform: platforms[20],
         genres: genres[4],
         releaseDate: new Date(1999, 1, 21)
