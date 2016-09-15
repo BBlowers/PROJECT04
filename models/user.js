@@ -7,7 +7,7 @@ var userSchema = new mongoose.Schema({
   profilePic: String,
   passwordHash: String,
   gamePosts: [{ type: mongoose.Schema.ObjectId, ref: 'GamePost' }],
-  conversations: []
+  conversations: [{ type: mongoose.Schema.ObjectId, ref: 'Conversation' }]
 });
 
 userSchema.virtual('password')

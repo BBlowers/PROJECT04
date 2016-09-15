@@ -1,2 +1,47 @@
 body {
 }
+
+.game-show-image {
+  max-height: 200px;
+  max-width: 200px;
+}
+
+nav.navbar.navbar-default {
+  border-radius: 0px;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  min-height: 100%;
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+
+.chat-title {
+  display: inline-block;
+}
+
+.chat-window {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.container {
+  width: auto;
+  max-width: 680px;
+  padding: 0 15px;
+}
+.container .text-muted {
+  margin: 20px 0;
+}

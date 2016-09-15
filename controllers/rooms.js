@@ -23,9 +23,13 @@ function roomShow(req, res) {
 function roomCreate(req, res) {
   Room.create(req.body)
     .then(function(room) {
+      return Room.findById(room._id);
+    })
+    .then(function(room) {
       res.status(201).json(room);
     })
     .catch(function(err) {
+      console.log("err: ", err);
       res.status(500).json(err);
     });
 }

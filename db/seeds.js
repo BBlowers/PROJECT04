@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var GamePost = require('../models/gamePost');
 var Genre = require('../models/genre');
 var Platform = require('../models/platform');
+var Conversation = require('../models/conversation');
 var User = require('../models/user');
 var bluebird = require('bluebird');
 
@@ -13,6 +14,7 @@ GamePost.collection.drop();
 Genre.collection.drop();
 Platform.collection.drop();
 User.collection.drop();
+Conversation.collection.drop();
 
 Genre.create([{
   name: "First Person Shooter",
@@ -184,7 +186,7 @@ Genre.create([{
         releaseDate: new Date(1999, 10, 5)
       },{
         name: "Super Smash Bros",
-        owner: users[0],
+        owner: users[2],
         pictures: ["Super-Smash-Bros-Brothers-Nintendo-64-N64-Nrmt.jpg", "n64_supersmashbrothers64.jpg", "n64_super_smash_bros.jpg"],
         platform: platforms[20],
         genres: genres[4],

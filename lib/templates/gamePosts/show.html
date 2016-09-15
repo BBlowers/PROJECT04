@@ -2,6 +2,8 @@
 <h3>{{ gamePostsShow.selected.platform }}</h3>
 <h3>{{ gamePostsShow.selected.genres }}</h3>
 
-<img ng-repeat="picture in gamePostsShow.selected.pictures" ng-src="{{ picture }}">
+<img class="game-show-image" ng-repeat="picture in gamePostsShow.selected.pictures" ng-src="{{ picture }}">
+
+<h3 ng-click="main.selectPrivateUser(gamePostsShow.selected.owner.username)">{{ gamePostsShow.selected.owner.username }}</h3>
 
 <button ui-sref="gamePostsEdit({ id: gamePostsShow.selected._id })">Edit</button>

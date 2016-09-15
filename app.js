@@ -11,6 +11,7 @@ var port = process.env.PORT || 3000;
 var environment = app.get('env');
 var databaseUri = require('./config/db.js')(environment)
 var User = require('./models/user.js')
+var Conversation = require('./models/conversation.js')
 
 mongoose.Promise = bluebird;
 mongoose.connect(databaseUri);
@@ -30,21 +31,53 @@ server = app.listen(port, function() {
   console.log("Express is listening on port: " + port);
 });
 
-function findUserByUsernameAndUpdateConversation(username, counterpart, sender, message) {
-  User.find({ username: username })
-    .then(function(user) {
-      conversationExists = user[0].conversations.map(function(conversation) {
-        if (conversation.username === counterpart) {
-          conversation.messages.push({ username: sender, messageContents: message })
-          return true;
-        } 
-      }).includes(true);
+function compareArrays(foo, bar) {
+  for (var i = 0; i < foo.length; i++) {
+    if (bar.indexOf(foo[i]) > -1) {
+      return foo[i];
+    }
+  }
+}
 
-      if (!conversationExists) user[0].conversations.push({ username: counterpart, messages: [{ username: sender, messageContents: message }] });
-      user[0].save();
-      console.log(user[0].username + "'s conversations are: ", user[0].conversations);    
-
-      
+function updateUserConversations(sender, reciever, message, callback) {
+  var matchedConversationId = false;
+  User.find({ username: reciever })
+    .then(function(users) {
+      return users[0];
+    })
+    .then(function(reciever) {
+      User.find({ username: sender })
+        .then(function(users) {
+          return { sender: users[0], reciever: reciever};
+        })
+        .then(function(users) {
+          matchedConversationId = compareArrays(users.sender.conversations, users.reciever.conversations);
+          if(!!matchedConversationId) {
+            Conversation.find({ _id: matchedConversationId })
+              .then(function(conversations) {
+                conversations[0].messages.push({ sender: sender, messageContents: message });
+                conversations[0].save();
+              })
+          } else {
+            Conversation.create({ users: [sender, reciever.username], messages: [{ sender: sender, messageContents: message }] })
+              .then(function(conversation) {
+                return conversation.save();
+              })
+              .then(function(conversation) {
+                matchedConversationId = conversation._id;
+                users.sender.conversations.push(conversation._id);
+                users.reciever.conversations.push(conversation._id);
+                return { sender: users.sender, reciever: users.reciever };
+              })
+              .then(function(users) {
+                users.sender.save();
+                users.reciever.save();
+              })
+          }
+        })
+        .then(function(conversationId) {
+          return callback(matchedConversationId);
+        })
     })
 }
 
@@ -63,22 +96,13 @@ io.on('connection', socketioJwt.authorize({
   });
 
   socket.on('pm', function(data) {
-    findUserByUsernameAndUpdateConversation(data.reciever, data.sender, data.sender, data.message);
-    findUserByUsernameAndUpdateConversation(data.sender, data.reciever, data.sender, data.message);
-    // User.find({ username: data.reciever })
-    //   .then(function(user) {
-    //     user[0].conversations.push({ username: data.sender, message: { username: data.sender, messageContents: data.message } })
-    //     user[0].save();
-    //     console.log("reciever.conversations is: ", user[0].conversations);
-    //   })
-    // User.find({ username: data.sender })
-    //   .then(function(user) {
-    //     user[0].conversations.push({ username: data.reciever, message: { username: data.sender, messageContents: data.message } })
-    //     user[0].save();
-    //     console.log("sender.conversations is: ", user[0].conversations);
-    //   })
-    users[data.reciever].emit('pm', data);
-    socket.emit('pm', data);
+    if (data.sender !== data.reciever) {
+      updateUserConversations(data.sender, data.reciever, data.message, function(conversationId) {
+        data.conversationId = conversationId;
+        socket.emit('pm', data);
+        if (!!users[data.reciever]) users[data.reciever].emit('pm', data);
+      })  
+    }
   });
 
   socket.on('disconnect', function() {

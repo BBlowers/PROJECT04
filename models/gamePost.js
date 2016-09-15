@@ -4,7 +4,7 @@ var s3 = require('../config/s3');
 var gamePostSchema = new mongoose.Schema({
   name: { type: String, required: true },
   owner: { type: mongoose.Schema.ObjectId, ref: 'User' },
-  pictures: [{ type: String, required: true }], // needs to be changed to picture uploader thingy
+  pictures: [{ type: String, required: true }],
   platform: { type: mongoose.Schema.ObjectId, ref: 'Platform' },
   genres: [{ type: mongoose.Schema.ObjectId, ref: 'Genre' }],
   releaseDate: Date

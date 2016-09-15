@@ -44,13 +44,18 @@ function gamePostCreate(req, res) {
 }
 
 function gamePostUpdate(req, res) {
-  console.log("req.body: ", req.body);
-  req.body.pictures = req.body.pictures.toString().split(",").concat(Object.keys(req.files).map(function(key) {
-    return req.files[key].key;
-  }));
 
   GamePost.findById(req.params.id)
     .then(function(gamePost) {
+
+      if(req.files) {
+        var newImages = Object.keys(req.files).map(function(key) {
+          return req.files[key].key;
+        });
+
+        gamePost.pictures = gamePost.pictures.concat(newImages);
+      }
+
       for(key in req.body) gamePost[key] = req.body[key];
       return gamePost.save();
     })
