@@ -1,7 +1,7 @@
-<ul>
-  <li ng-repeat="gamePost in gamePostsIndex.all" ui-sref="gamePostsShow({ id: gamePost._id })">
-    {{ gamePost }}
-  </li>
-</ul>
-
-<button ui-sref="gamePostsNew">Add</button>
+<div class="index-container">
+  <div class="game-post-index" ui-sref="gamePostsShow({ id: gamePost._id })" ng-repeat="gamePost in gamePostsIndex.all">
+    <div class="game-index-image" ng-style="{'background-image':'url({{gamePost.pictures[0]}})' }">
+    <h4 class="game-index-title">{{ gamePost.name }}</h4>
+    </div>
+  </div>
+</div>

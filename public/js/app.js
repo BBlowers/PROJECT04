@@ -68,20 +68,12 @@ function LoginController($auth, $state, $rootScope) {
 
   this.credentials = {};
 
-  this.authenticate = function(provider) {
-    $auth.authenticate(provider)
-      .then(function() {
-        $rootScope.$broadcast("loggedIn");
-        $state.go('home');
-      });
-  }
-
   this.submit = function() {
     $auth.login(this.credentials, {
       url: "/api/login"
     }).then(function(){
       $rootScope.$broadcast("loggedIn");
-      $state.go('home');
+      $state.go('gamePostsIndex');
     })
   }
 }
@@ -99,8 +91,38 @@ function MainController($window, $auth, $state, $rootScope, User) {
 
   this.privateUser = null;
 
-  this.selectPrivateUser = function(username) {
-    this.privateUser = { username: username };
+  this.startConversation = function(username) {
+    self.currentUser = $auth.getPayload();
+    if (username !== self.currentUser.username) {
+      var matchedConversation = null;
+      self.conversations.forEach(function(conversation) {
+        if (conversation.users.includes(username)) matchedConversation = conversation;
+      })
+      if (!matchedConversation) {
+        self.conversations.push({ currentMessage: null, messages: [], users: [username, self.currentUser.username], show: true })
+      }  
+    }    
+  }
+
+  this.isCurrentUserOwner = function(owner) {
+    self.currentUser = $auth.getPayload();
+    if (self.currentUser.username === owner) return true;
+  }
+
+  this.hideNavbar = function() {
+    var hide = false;
+    ["home", "login", "register"].forEach(function(stateName) {
+      if($state.current.name === stateName) hide = true;
+    })
+    return hide;
+  }
+  
+  this.addGamePostShow = function() {
+    var hide = false;
+    ["gamePostsIndex", "gamePostsShow", "gamePostsNew"].forEach(function(stateName) {
+      if($state.current.name === stateName) hide = true;
+    })
+    return hide;
   }
 
   socket.on('connect', function() {
@@ -126,39 +148,45 @@ function MainController($window, $auth, $state, $rootScope, User) {
 
   this.message = null;
 
-  // ----------------------------------------- should try using this.chatWindows[idOfChatWindow].title
-  // ----------------------------------------- should try using this.chatWindows[idOfChatWindow].messages
-
-  this.all = [];
-
-  this.sendMessage = function(users) {
-    var privateUser = this.chatWindowName(users);
-    socket.emit("pm", { message: this.message, reciever: privateUser, sender: this.currentUser.username });
-    // socket.emit("pm", { message: this.message, reciever: this.privateUser.username, sender: this.currentUser.username });
-    this.message = null;
+  this.sendMessage = function(conversation) {
+    self.currentUser = $auth.getPayload();
+    var privateUser = this.chatWindowName(conversation.users);
+    socket.emit("pm", { message: conversation.currentMessage, receiver: privateUser, sender: self.currentUser.username });
+    conversation.currentMessage = null;
   }
 
   socket.on('pm', function(message) {
-    console.log('pm', message);
+    self.currentUser = $auth.getPayload();
     $rootScope.$evalAsync(function() {
       var matchedConversation = null;
       self.conversations.forEach(function(conversation) {
-        if (conversation._id === message.conversationId) matchedConversation = conversation;
+        var userMatches = 0;
+        conversation.users.forEach(function(user) {
+          message.users.forEach(function(messageUser) {
+            if (messageUser === user) userMatches++;
+          })
+        })
+        if (userMatches > 1) {
+          matchedConversation = conversation;
+        }        
       })
       if(!!matchedConversation) {
-        matchedConversation.messages.push({ sender: message.sender, messageContents: message.message })
+        matchedConversation.messages.push({ sender: message.sender, messageContents: message.message, show: true })
+      } else {
+        self.conversations.push({ currentMessage: null, messages: [{ sender: message.sender, messageContents: message.message }], users: [message.sender, self.currentUser.username], show: true })
       }
-
-      // self.all.push(message);
     });
   });
 
-  this.currentUser = $auth.getPayload();
+  self.currentUser = $auth.getPayload();
 
   if (!!self.currentUser) {
-    console.log(self.currentUser._id);
     User.get({ id: self.currentUser._id }, function(user) {
       self.conversations = user.conversations;
+      self.conversations.forEach(function(conversation) {
+        conversation.currentMessage = null;
+        conversation.show = false;
+      })
     })  
   } 
 
@@ -172,9 +200,13 @@ function MainController($window, $auth, $state, $rootScope, User) {
     return chatName;
   }
 
+  this.showChat = function(conversation) {
+    conversation.show = !conversation.show;
+  }
+
   this.logout = function() {
     $auth.logout();
-    this.currentUser = null;
+    self.currentUser = null;
     this.conversations = null;
     $state.go("home");
   }
@@ -183,6 +215,10 @@ function MainController($window, $auth, $state, $rootScope, User) {
     self.currentUser = $auth.getPayload();
     User.get({ id: self.currentUser._id }, function(user) {
       self.conversations = user.conversations;
+      self.conversations.forEach(function(conversation) {
+        conversation.currentMessage = null;
+        conversation.show = false;
+      })
     })  
   });
 }
@@ -201,7 +237,6 @@ function RegisterController($auth, $state, $rootScope) {
       url: '/api/register'
     })
     .then(function(){
-      $rootScope.$broadcast("loggedIn");
       $state.go("login");
     })
   }
@@ -316,7 +351,7 @@ function formData() {
     transform: function(data) {
       var formData = new FormData();
       angular.forEach(data, function(value, key) {
-        if(value._id) value = value._id;
+        if(!!value && value._id) value = value._id;
         if(!key.match(/^\$/)) {
 
           if(value instanceof FileList) {
@@ -353,7 +388,6 @@ function GamePostsEditController(GamePost, Platform, Genre, $state) {
   this.platforms = Platform.query();
 
   this.removeGenre = function(genre) {
-    console.log(this.selectedGenres, genre);
     this.selectedGenres.splice(
       this.selectedGenres.indexOf(genre), 1);
   }
@@ -387,9 +421,10 @@ angular
   .module('RetroGames')
   .controller("GamePostsNewController", GamePostsNewController);
 
-GamePostsNewController.$inject = ["GamePost","Platform", "Genre", "$state"];
-function GamePostsNewController(GamePost, Platform, Genre, $state) {
+GamePostsNewController.$inject = ["GamePost","Platform", "Genre", "$state", "$auth"];
+function GamePostsNewController(GamePost, Platform, Genre, $state, $auth) {
   var self = this;
+  this.currentUser = $auth.getPayload();
   this.new = {};
   this.genres = Genre.query();
   this.platforms = Platform.query();
@@ -414,6 +449,7 @@ function GamePostsNewController(GamePost, Platform, Genre, $state) {
     this.new.genres = this.selectedGenres.map(function(genre) {
       return genre._id;
     });
+    this.new.owner = self.currentUser._id;
     GamePost.save(this.new, function() {
       $state.go('gamePostsIndex');
     });
@@ -423,15 +459,18 @@ angular
   .module('RetroGames')
   .controller("GamePostsShowController", GamePostsShowController);
 
-GamePostsShowController.$inject = ["GamePost", "$state"];
-function GamePostsShowController(GamePost, $state) {
-  this.selected = GamePost.get($state.params);
+GamePostsShowController.$inject = ["GamePost", "$state", "$scope", "$rootScope"];
+function GamePostsShowController(GamePost, $state, $scope, $rootScope) {
+  this.selected = GamePost.get($state.params, function(gamePost) {
+    $rootScope.$broadcast("gameSelected");
+  });
 
   this.delete = function() {
     this.selected.$remove(function() {
       $state.go("gamePostsIndex");
     });
   }
+
 }
 angular
   .module('RetroGames')

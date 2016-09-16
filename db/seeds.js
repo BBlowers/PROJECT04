@@ -166,7 +166,7 @@ Genre.create([{
       GamePost.create([{
         name: "Sonic the Hedgehog 2",
         owner: users[0],
-        pictures: ["Sonic-2-1.jpg", "PYenvBD0jyeXaFy7tfd1-DajFXeWLtgFj9LxLx7rlbHZAzOxokDD7JgaO-XZST1CmC4=h900", "sega_genesis_sonic_hedgehog_2_cart.JPG"],
+        pictures: ["Sonic-2-1.jpg", "sega_genesis_sonic_hedgehog_2_cart.JPG"],
         platform: platforms[24],
         genres: genres[2],
         releaseDate: new Date(1992, 11, 21)

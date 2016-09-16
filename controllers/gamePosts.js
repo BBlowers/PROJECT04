@@ -24,7 +24,9 @@ function gamePostShow(req, res) {
 }
 
 function gamePostCreate(req, res) {
-
+  console.log(req.body);
+  req.body.genres = req.body.genres.split(",");
+  console.log(req.body);
   req.body.pictures = Object.keys(req.files).map(function(key) {
     return req.files[key].key;
   });
@@ -44,19 +46,19 @@ function gamePostCreate(req, res) {
 }
 
 function gamePostUpdate(req, res) {
-
+  if (typeof req.body.genres === 'string') {
+    req.body.genres = req.body.genres.split(",");
+  }
+  
   GamePost.findById(req.params.id)
     .then(function(gamePost) {
-
+      for(key in req.body) gamePost[key] = req.body[key];
       if(req.files) {
         var newImages = Object.keys(req.files).map(function(key) {
           return req.files[key].key;
         });
-
         gamePost.pictures = gamePost.pictures.concat(newImages);
       }
-
-      for(key in req.body) gamePost[key] = req.body[key];
       return gamePost.save();
     })
     .then(function(gamePost) {
@@ -67,7 +69,7 @@ function gamePostUpdate(req, res) {
       res.status(200).json(gamePost);
     })
     .catch(function(err) {
-      console.log(err);
+      console.log("err is: ", err);
       res.status(500).json(err);
     });
 }

@@ -1,9 +1,195 @@
+@import 'https://fonts.googleapis.com/css?family=Maven+Pro';
+
 body {
+  font-family: 'Maven Pro', sans-serif;
+}
+
+.game-show-owner {
+  display: inline-block;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 20px;
+}
+
+.game-index-title {
+  font-size: 30px;
+  margin-right: 10px;
+  text-align: right;
+  color: #ecf0f1;
+}
+
+.game-show-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 30px;
+  margin-right: 10px;
+  color: #f433c4;
+  display: inline-block;
+}
+
+.game-show-info {
+  margin-left: 10px;
+}
+
+
+
+.game-show-images-container {
+  width: 90%;
+  margin: auto;
 }
 
 .game-show-image {
-  max-height: 200px;
-  max-width: 200px;
+  height: 400px;
+  width: 400px;
+  background-image: no-repeat; 
+  background-size: cover;
+  display: inline-block;
+  margin: 10px;
+}
+
+.game-post-index {
+  display: inline-block;
+  margin: 10px;
+}
+
+.index-container {
+  width: 90%;
+  margin: auto;
+}
+
+.game-index-image {
+  height: 400px;
+  width: 400px;
+  background-image: no-repeat; 
+  background-size: cover;
+  display: inline-block;
+}
+
+.game-post {
+  display: inline-block;
+}
+
+.body-background::after {
+  content: '';
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: url("http://i.imgur.com/Hach4.jpg") center no-repeat;
+  background-size: cover;
+  z-index: -1;
+  opacity: 0.2;
+}
+
+.homepage-login-left {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 30px;
+  float: left;
+}
+
+.homepage-login-right {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 30px;
+  float: right;
+}
+
+.homepage-link {
+  text-decoration: none;
+  color: black;
+}
+
+.homepage-link:hover {
+  text-decoration: none;
+  color: grey;
+}
+
+.homepage-title {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 100px;
+  text-decoration: none;
+  color: #f433c4;
+}
+
+.homepage-title:hover {
+  text-decoration: none;
+  color: #f433c4;
+}
+
+a.navbar-brand {
+  font-family: 'Press Start 2P', cursive;
+  text-decoration: none;
+  color: #f433c4 !important;
+}
+
+.homepage-box {
+  margin-left: 100px;
+  margin-top: 100px;
+  width: 488px;
+}
+
+.login-box {
+  margin-left: 100px;
+  margin-top: 100px;
+  width: 488px;
+}
+
+.login-form {
+  margin-left: 12px;
+  margin-bottom: 12px;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.login-email {
+  width: 70%;
+  left: 0px;
+  border: 2px solid black;
+  padding-left: 3px;
+}
+
+.login-password {
+  width: 60%;
+  right: 0px;
+  border: 2px solid black;
+  margin-top: 15px;
+  padding-left: 3px;
+}
+
+.login-submit {
+  background-color: white;
+  border: 2px solid black;
+}
+
+.login-email:focus, .login-password:focus {
+  outline: 3px solid black;
+}
+
+.login-submit:focus {
+  outline: 1px solid black;  
+}
+
+.login-margin-top {
+  margin-top: 15px;
+}
+
+.spaced-left {
+  margin-left: 12px;
+}
+
+.navbar .navbar-default {
+  font-family: 'Press Start 2P', cursive;
+
+}
+
+.navbar-default {
+  background-color: black;
+}
+
+a.navbar-brand {
+  font-family: 'Press Start 2P', cursive;
+}
+
+ul.nav.navbar-nav {
+  font-family: 'Press Start 2P', cursive;
+  font-size: 10px;
 }
 
 nav.navbar.navbar-default {
@@ -15,26 +201,95 @@ html {
   min-height: 100%;
 }
 body {
-  /* Margin bottom by footer height */
   min-height: 100%;
   margin-bottom: 60px;
 }
+
 .footer {
-  position: absolute;
-  bottom: 0;
+    bottom:0;
+    position:fixed;
+    z-index:150;
+    _position:absolute;
+    _top:expression(eval(document.documentElement.scrollTop+
+        (document.documentElement.clientHeight-this.offsetHeight)));
+}
+
+.genre-button {
+  display: inline-block;
+}
+
+.selected-genres {
+  min-height: 25px;
+  margin: 10px 0px;
+}
+
+.file-upload {
+  margin-top: 15px;
+}
+
+.platform-save-cancel {
+  margin-top: 10px;
+}
+
+.platform-select {
+  border-radius: 0;
+}
+
+.genre-item {
+  margin: 0;
+}
+
+.chat-box {
+  background-color: #fffafa;
+  border-right: 6px solid #443e3e;
+  border-top: 6px solid #443e3e;
+}
+
+.messages {
+  max-height: 180px;
+  overflow: scroll;
+}
+
+.chat-message {
+  list-style-type: none;
+  // font-family: 'Maven Pro', sans-serif;
+}
+
+.messages {
+  min-height: 20px;
+  padding-left: 10px;
+}
+
+.chat-field {
   width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  background-color: #f5f5f5;
+}
+
+.chat-field:focus {
+  outline: 2px solid black;
 }
 
 .chat-title {
   display: inline-block;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  vertical-align: bottom;
+  color: #f433c4;
+  font-size: 15px;
+  font-family: 'Press Start 2P', cursive;
+}
+
+.chat-name {
+  padding-left: 15px;
+  background-color: #5b5a5c;
+  padding-bottom: 5px;
+  border-right: 6px solid #443e3e;
 }
 
 .chat-window {
+  padding: 0; 
+  height: 40px;
+  width: 200px;
   display: inline-block;
-  margin: 0 10px;
 }
 
 .container {
@@ -44,4 +299,73 @@ body {
 }
 .container .text-muted {
   margin: 20px 0;
+}
+
+$bgDefault      : #5b5a5c;
+$bgHighlight    : #aaa7ab;
+$colDefault     : #ecf0f1;
+$colHighlight   : #f433c4;
+$dropDown       : false;
+.navbar-default {
+  background-color: $bgDefault;
+  border-color: $bgHighlight;
+  .navbar-brand {
+    color: $colDefault;
+    &:hover, &:focus {
+      color: $colHighlight; }}
+  .navbar-text {
+    color: $colDefault; }
+  .navbar-nav {
+    > li {
+      > a {
+        color: $colDefault;
+        &:hover,  &:focus {
+          color: $colHighlight; }}
+      @if $dropDown {
+        > .dropdown-menu {
+          background-color: $bgDefault;
+          > li {
+            > a {
+              color: $colDefault;
+              &:hover,  &:focus {
+                color: $colHighlight;
+                background-color: $bgHighlight; }}
+            > .divider {
+              background-color: $bgHighlight;}}}}}
+    @if $dropDown {
+      .open .dropdown-menu > .active {
+        > a, > a:hover, > a:focus {
+          color: $colHighlight;
+          background-color: $bgHighlight; }}}
+    > .active {
+      > a, > a:hover, > a:focus {
+        color: $colHighlight;
+        background-color: $bgHighlight; }}
+    > .open {
+      > a, > a:hover, > a:focus {
+        color: $colHighlight;
+        background-color: $bgHighlight; }}}
+  .navbar-toggle {
+    border-color: $bgHighlight;
+    &:hover, &:focus {
+      background-color: $bgHighlight; }
+    .icon-bar {
+      background-color: $colDefault; }}
+  .navbar-collapse,
+  .navbar-form {
+    border-color: $colDefault; }
+  .navbar-link {
+    color: $colDefault;
+    &:hover {
+      color: $colHighlight; }}}
+@media (max-width: 767px) {
+  .navbar-default .navbar-nav .open .dropdown-menu {
+    > li > a {
+      color: $colDefault;
+      &:hover, &:focus {
+        color: $colHighlight; }}
+    > .active {
+      > a, > a:hover, > a:focus {
+        color: $colHighlight;
+        background-color: $bgHighlight; }}}
 }

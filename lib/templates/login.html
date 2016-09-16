@@ -1,10 +1,10 @@
-<h1>login</h1>
+<div class="login-box">
+  <a class="homepage-title" ui-sref="login">Login</a>
+  <form class="login-form" ng-submit="login.submit()">
+    <input placeholder="Email" class="login-email" type="text" name="email" ng-model="login.credentials.email">
+    <input placeholder="Password" class="login-password" type="password" name="password" ng-model="login.credentials.password">
 
-<form ng-submit="login.submit()">
-  <input type="text" name="email" ng-model="login.credentials.email">
-  <input type="password" name="password" ng-model="login.credentials.password">
-
-  <button>Submit</button>
-</form>
-
-<a ui-sref="register">Or register</a>
+    <button class="login-submit">Submit</button>
+  </form>
+  <a class="homepage-login-left homepage-link spaced-left" ui-sref="register">Register</a>
+</div>

@@ -1,1 +1,5 @@
-<h1>home</h1>
+<div class="homepage-box">
+  <a class="homepage-title" ui-sref="gamePostsIndex">Retro Games</a>
+  <a class="homepage-login-left homepage-link" ng-if="!main.currentUser" ui-sref="login">Login</a>
+  <a class="homepage-login-right homepage-link" ng-if="!main.currentUser" ui-sref="register">Register</a>
+</div>

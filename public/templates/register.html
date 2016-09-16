@@ -1,13 +1,12 @@
-<h1>register</h1>
+<div class="login-box">
+  <a class="homepage-title" ui-sref="register">Register</a>
+  <form class="login-form" ng-submit="register.submit()">
+    <input placeholder="Username" class="login-email" type="text" name="text" ng-model="register.newUser.username">
+    <input placeholder="Email" class="login-email login-margin-top" type="text" name="email" ng-model="register.newUser.email">
+    <input placeholder="Password" class="login-password" type="password" name="password" ng-model="register.newUser.password">
+    <input placeholder="Password confirm" class="login-password" type="password" name="password" ng-model="register.newUser.passwordConfirmation">
 
-<form ng-submit="register.submit()">
-  <input type="text" placeholder="username" name="username" ng-model="register.newUser.username">
-  <input type="text" placeholder="email" name="email" ng-model="register.newUser.email">
-  <input type="text" placeholder="profile pic" name="profilePic" ng-model="register.newUser.profilePic">
-  <input type="password" placeholder="password" name="password" ng-model="register.newUser.password">
-  <input type="password" placeholder="password confirmation" name="passwordConfirmation" ng-model="register.newUser.passwordConfirmation">
-
-  <button>Submit</button>
-</form>
-
-<a ui-sref="login">Or login</a>
+    <button class="login-submit">Submit</button>
+  </form>
+  <a class="homepage-login-left homepage-link spaced-left" ui-sref="login">Login</a>
+</div>

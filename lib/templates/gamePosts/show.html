@@ -1,9 +1,10 @@
-<h3>{{ gamePostsShow.selected.name }}</h3>
-<h3>{{ gamePostsShow.selected.platform }}</h3>
-<h3>{{ gamePostsShow.selected.genres }}</h3>
+<div class="game-show-info"><h3 class="game-show-title">{{ gamePostsShow.selected.name }}</h3><h3 ng-click="main.startConversation(gamePostsShow.selected.owner.username)" class="game-show-owner">{{ gamePostsShow.selected.owner.username }}</h3>
+  <h3>Platform: <strong>{{ gamePostsShow.selected.platform.name }}</strong></h3>
+  <h3>Genres: <strong ng-repeat="genre in gamePostsShow.selected.genres">{{ genre.name }}</strong></h3>
+  <button ng-if="!!main.isCurrentUserOwner(gamePostsShow.selected.owner.username)" ui-sref="gamePostsEdit({ id: gamePostsShow.selected._id })">Edit</button>
+</div>
 
-<img class="game-show-image" ng-repeat="picture in gamePostsShow.selected.pictures" ng-src="{{ picture }}">
 
-<h3 ng-click="main.selectPrivateUser(gamePostsShow.selected.owner.username)">{{ gamePostsShow.selected.owner.username }}</h3>
-
-<button ui-sref="gamePostsEdit({ id: gamePostsShow.selected._id })">Edit</button>
+<div class="game-show-images-container">
+  <img class="game-show-image" ng-repeat="picture in gamePostsShow.selected.pictures" ng-src="{{ picture }}">
+</div>

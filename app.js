@@ -39,19 +39,19 @@ function compareArrays(foo, bar) {
   }
 }
 
-function updateUserConversations(sender, reciever, message, callback) {
+function updateUserConversations(sender, receiver, message, callback) {
   var matchedConversationId = false;
-  User.find({ username: reciever })
+  User.find({ username: receiver })
     .then(function(users) {
       return users[0];
     })
-    .then(function(reciever) {
+    .then(function(receiver) {
       User.find({ username: sender })
         .then(function(users) {
-          return { sender: users[0], reciever: reciever};
+          return { sender: users[0], receiver: receiver};
         })
         .then(function(users) {
-          matchedConversationId = compareArrays(users.sender.conversations, users.reciever.conversations);
+          matchedConversationId = compareArrays(users.sender.conversations, users.receiver.conversations);
           if(!!matchedConversationId) {
             Conversation.find({ _id: matchedConversationId })
               .then(function(conversations) {
@@ -59,24 +59,25 @@ function updateUserConversations(sender, reciever, message, callback) {
                 conversations[0].save();
               })
           } else {
-            Conversation.create({ users: [sender, reciever.username], messages: [{ sender: sender, messageContents: message }] })
+            Conversation.create({ users: [sender, receiver.username], messages: [{ sender: sender, messageContents: message }] })
               .then(function(conversation) {
                 return conversation.save();
               })
               .then(function(conversation) {
                 matchedConversationId = conversation._id;
                 users.sender.conversations.push(conversation._id);
-                users.reciever.conversations.push(conversation._id);
-                return { sender: users.sender, reciever: users.reciever };
+                users.receiver.conversations.push(conversation._id);
+                return { sender: users.sender, receiver: users.receiver };
               })
               .then(function(users) {
                 users.sender.save();
-                users.reciever.save();
+                users.receiver.save();
               })
           }
+          return users;
         })
-        .then(function(conversationId) {
-          return callback(matchedConversationId);
+        .then(function(users) {
+          return callback({ id: matchedConversationId, users: [users.sender.username, users.receiver.username] });
         })
     })
 }
@@ -96,11 +97,12 @@ io.on('connection', socketioJwt.authorize({
   });
 
   socket.on('pm', function(data) {
-    if (data.sender !== data.reciever) {
-      updateUserConversations(data.sender, data.reciever, data.message, function(conversationId) {
-        data.conversationId = conversationId;
+    if (data.sender !== data.receiver) {
+      updateUserConversations(data.sender, data.receiver, data.message, function(conversationIdUsers) {
+        data.conversationId = conversationIdUsers.id;
+        data.users = conversationIdUsers.users;
         socket.emit('pm', data);
-        if (!!users[data.reciever]) users[data.reciever].emit('pm', data);
+        if (!!users[data.receiver]) users[data.receiver].emit('pm', data);
       })  
     }
   });

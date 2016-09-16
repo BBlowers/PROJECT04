@@ -6,14 +6,15 @@
   <script src="/js/vendor.js"></script>
   <script src="/js/app.js"></script>
   <script src="https://cdn.jsdelivr.net/satellizer/0.15.5/satellizer.min.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="/css/app.css">
 </head>
-<body ng-controller="MainController as main">
-<nav class="navbar navbar-default">
+<body class="body-background" ng-controller="MainController as main">
+<nav ng-hide="main.hideNavbar()" class="navbar navbar-default">
   <div class="container-fluid">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#retro-games-navbar" aria-expanded="false">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -22,60 +23,37 @@
       <a class="navbar-brand" href="#">Retro Games</a>
     </div>
 
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <div class="collapse navbar-collapse" id="retro-games-navbar">
       <ul class="nav navbar-nav">
-        <li ui-sref-active="active"><a ui-sref="login">Login</a></li>
-        <li ui-sref-active="active"><a ui-sref="register">Register</a></li>
-        <li ui-sref-active="active"><a href="" ng-click="main.logout()">Logout</a></li>
+        <li ng-if="!main.currentUser" ui-sref-active="active"><a ui-sref="login">Login</a></li>
+        <li ng-if="!main.currentUser" ui-sref-active="active"><a ui-sref="register">Register</a></li>
+        <li ng-if="!!main.currentUser"><a href="#">{{ main.currentUser.username }}</a></li>
+        <li><a href="" ng-click="main.logout()">Logout</a></li>
         <li ui-sref-active="active"><a ui-sref="gamePostsIndex">Game Posts</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Link</a></li>
-        <!-- <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Action</a></li>
-            <li><a href="#">Another action</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-          </ul>
-        </li> -->
+        <li ng-if="main.addGamePostShow()" ui-sref-active="active"><a ui-sref="gamePostsNew">Add Game</a></li>
       </ul>
     </div>
   </div>
 </nav>
+
 <main ui-view></main>
-<!-- 
-<div ng-if="!!main.currentUser" id="chatWindows">
-  <ul>
-    <li ng-repeat="convo in main.conversations track by $index">{{ convo }}
-    <li ng-repeat="message in convo.messages">message: {{ message }}</li>
-    </li>
-    <li ng-repeat="message in main.all track by $index">{{ message }}</li>
-  </ul>
 
-  <button ng-click="main.selectPrivateUser('jleslie')">jleslie</button>
-  <button ng-click="main.selectPrivateUser('bsmith')">bsmith</button>
-
-  <form ng-submit="main.sendMessage()">
-    <input type="text" ng-model="main.message">
-    <button ng-disabled="!main.connected">Send</button>
-  </form>
-</div>
- -->
-<footer ng-if="!!main.currentUser" class="footer">
+<footer ng-if="!!main.currentUser" ng-hide="main.hideNavbar()" class="footer">
   <div class="chat-window" ng-repeat="conversation in main.conversations">
-    <div class="messages">
-      <ul>
-        <li ng-repeat="message in conversation.messages">{{ message.sender }}: {{ message.messageContents }}</li>
-      </ul>
+    <div ng-show="conversation.show" class="chat-box">
+      <div>
+        <ul class="messages">
+          <li class="chat-message" ng-repeat="message in conversation.messages">{{ message.sender }}: {{ message.messageContents }}</li>
+        </ul>
+      </div>
+      <form ng-submit="main.sendMessage(conversation)">
+        <input class="chat-field" type="text" ng-model="conversation.currentMessage">
+        <!-- <button ng-disabled="!main.connected">Send</button> -->
+      </form>
     </div>
-    <form ng-submit="main.sendMessage(conversation.users)">
-      <input type="text" ng-model="main.message">
-      <button ng-disabled="!main.connected">Send</button>
-    </form>
-    <h2 class="chat-title">{{ main.chatWindowName(conversation.users) }}</h2>
+    <div class="chat-name" ng-click="main.showChat(conversation)">
+      <h2 class="chat-title">{{ main.chatWindowName(conversation.users) }}</h2>
+    </div>
   </div>
 </footer>
 

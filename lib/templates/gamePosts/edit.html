@@ -1,23 +1,26 @@
+<div class="login-box">
+  <a class="homepage-title">Edit</a>
 <form ng-submit="gamePostsEdit.save()">
-  <input type="text" name="name" ng-model="gamePostsEdit.selected.name" placeholder="Name">
+  <input type="text" name="name" ng-model="gamePostsEdit.selected.name" placeholder="Name" class="login-email">
 
-  <input type="file" file name="pictures" ng-model="gamePostsEdit.selected.pictures" placeholder="pictures" multiple>
+  <input type="file" file name="pictures" ng-model="gamePostsEdit.selected.pictures" placeholder="pictures" multiple class="file-upload">
 
-  <input type="date" date name="releaseDate" ng-model="gamePostsEdit.selected.releaseDate" placeholder="Release date">
-
-  <h3><span ng-repeat="genre in gamePostsEdit.selectedGenres" ng-click="gamePostsEdit.removeGenre(genre)">{{ genre.abbreviation }} x </span></h3>
-
-  <div ng-repeat="genre in gamePostsEdit.genres">
-    <button type="button" ng-click="gamePostsEdit.addGenre(genre)">{{ genre }}</button>
+  <input type="date" date name="releaseDate" class="login-password" ng-model="gamePostsEdit.selected.releaseDate" placeholder="Release date">
+  <div class="selected-genres">
+    <button class="genre-item" ng-repeat="genre in gamePostsEdit.selectedGenres" ng-click="gamePostsEdit.removeGenre(genre)">{{ genre.abbreviation }}</button>
   </div>
 
-  <select name="platform" ng-model="gamePostsEdit.selected.platform">
-    <option disabled selected value="">Please select</option>
-    <option ng-value="platform._id" ng-repeat="platform in gamePostsEdit.platforms" ng-selected="platform._id === gamePostsEdit.selected.platform._id">{{platform.abbreviation}}</option>
-  </select>
+  <div class="genre-container">
+    <button ng-repeat="genre in gamePostsEdit.genres" class="genre-button" type="button" ng-click="gamePostsEdit.addGenre(genre)">{{ genre.abbreviation }}</button>
+  </div>
+  <div class="platform-save-cancel">
+    <select class="platform-select" name="platform" ng-model="gamePostsEdit.selected.platform">
+      <option disabled selected value="">Please select</option>
+      <option ng-value="platform._id" ng-repeat="platform in gamePostsEdit.platforms" ng-selected="platform._id === gamePostsEdit.selected.platform._id">{{platform.abbreviation}}</option>
+    </select>
 
-  <button>Save</button>
-  <button type="button" ui-sref="gamePostsShow({ id: gamePostsEdit.selected._id })">Cancel</button>
+    <button>Save</button>
+    <button type="button" ui-sref="gamePostsShow({ id: gamePostsEdit.selected._id })">Cancel</button>
+  </div>
 </form>
-
-<h1>{{gamePostsEdit.selectedGenres}}</h1>
+</div>

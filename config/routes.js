@@ -34,7 +34,6 @@ router.route('/platforms')
   .get(platformsController);
 
 router.route('/game_posts')
-  .all(secureRoute)
   .get(gamePostsController.index)
   .post(upload.array('pictures'), gamePostsController.create);
 

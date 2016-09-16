@@ -1,4 +1,4 @@
-<form ng-submit="gamePostsNew.create()">
+<!-- <form ng-submit="gamePostsNew.create()">
   <input type="text" name="name" ng-model="gamePostsNew.new.name" placeholder="Name">
   
   <input type="file" file name="pictures" ng-model="gamePostsNew.new.pictures" placeholder="pictures" multiple>
@@ -17,4 +17,31 @@
   </select>
 
   <button>Save</button>
+</form> -->
+
+<div class="login-box">
+  <a class="homepage-title">Add Game</a>
+<form ng-submit="gamePostsNew.create()">
+  <input type="text" name="name" ng-model="gamePostsNew.new.name" placeholder="Name" class="login-email">
+
+  <input type="file" file name="pictures" ng-model="gamePostsNew.new.pictures" placeholder="pictures" multiple class="file-upload">
+
+  <input type="date" date name="releaseDate" class="login-password" ng-model="gamePostsNew.new.releaseDate" placeholder="Release date">
+  <div class="selected-genres">
+    <button class="genre-item" ng-repeat="genre in gamePostsNew.selectedGenres" ng-click="gamePostsNew.removeGenre(genre)">{{ genre.abbreviation }}</button>
+  </div>
+
+  <div class="genre-container">
+    <button ng-repeat="genre in gamePostsNew.genres" class="genre-button" type="button" ng-click="gamePostsNew.addGenre(genre)">{{ genre.abbreviation }}</button>
+  </div>
+  <div class="platform-save-cancel">
+    <select class="platform-select" name="platform" ng-model="gamePostsNew.new.platform">
+      <option disabled new value="">Please select</option>
+      <option ng-value="platform._id" ng-repeat="platform in gamePostsNew.platforms" ng-new="platform._id === gamePostsNew.new.platform._id">{{platform.abbreviation}}</option>
+    </select>
+
+    <button>Save</button>
+    <button type="button" ui-sref="gamePostsShow({ id: gamePostsNew.new._id })">Cancel</button>
+  </div>
 </form>
+</div>
