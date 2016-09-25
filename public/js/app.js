@@ -174,7 +174,6 @@ function MainController($window, $auth, $state, $rootScope, User) {
         matchedConversation.messages.push({ sender: message.sender, messageContents: message.message, show: true })
       } else {
         self.conversations.push({ currentMessage: null, messages: [{ sender: message.sender, messageContents: message.message }], users: [message.sender, self.currentUser.username], show: true })
-        console.log(self.conversations);
       }
     });
   });

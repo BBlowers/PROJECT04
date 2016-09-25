@@ -97,6 +97,7 @@ io.on('connection', socketioJwt.authorize({
   });
 
   socket.on('pm', function(data) {
+    console.log("pm received: ", data);
     if (data.sender !== data.receiver) {
       updateUserConversations(data.sender, data.receiver, data.message, function(conversationIdUsers) {
         data.conversationId = conversationIdUsers.id;
