@@ -25,6 +25,7 @@ function gamePostShow(req, res) {
 
 function gamePostCreate(req, res) {
   console.log(req.body);
+  console.log(req.files);
   req.body.genres = req.body.genres.split(",");
   console.log(req.body);
   req.body.pictures = Object.keys(req.files).map(function(key) {

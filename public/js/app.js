@@ -89,8 +89,6 @@ function MainController($window, $auth, $state, $rootScope, User) {
 
   this.connected = false;
 
-  this.privateUser = null;
-
   this.startConversation = function(username) {
     self.currentUser = $auth.getPayload();
     if (username !== self.currentUser.username) {
@@ -102,11 +100,6 @@ function MainController($window, $auth, $state, $rootScope, User) {
         self.conversations.push({ currentMessage: null, messages: [], users: [username, self.currentUser.username], show: true })
       }  
     }    
-  }
-
-  this.isCurrentUserOwner = function(owner) {
-    self.currentUser = $auth.getPayload();
-    if (self.currentUser.username === owner) return true;
   }
 
   this.hideNavbar = function() {
@@ -125,58 +118,67 @@ function MainController($window, $auth, $state, $rootScope, User) {
     return hide;
   }
 
-  socket.on('connect', function() {
-    socket
-      .emit('authenticate', { token: $auth.getToken() })
-      .on('authenticated', function() {
-        $rootScope.$applyAsync(function() {
-          self.connected = true;
+  this.socketConnect = function() {
+    socket = $window.io();
+    socket.on('connect', function() {
+      socket
+        .emit('authenticate', { token: $auth.getToken() })
+        .on('authenticated', function() {
+          $rootScope.$applyAsync(function() {
+            self.connected = true;
+          });
+        })
+        .on('unauthorized', function() {
+          $rootScope.$applyAsync(function() {
+            self.connected = false;
+          });
         });
-      })
-      .on('unauthorized', function() {
+
+      socket.on('disconnect', function(){
         $rootScope.$applyAsync(function() {
           self.connected = false;
         });
       });
+    });
 
-    socket.on('disconnect', function(){
-      $rootScope.$applyAsync(function() {
-        self.connected = false;
+    socket.on('pm', function(message) {
+      self.currentUser = $auth.getPayload();
+      var matchedConversation = null;
+      var matchedConversationName;
+      $rootScope.$evalAsync(function() {
+        self.conversations.forEach(function(conversation) {
+          var userMatches = 0;
+          conversation.users.forEach(function(conversationUser) {
+            message.users.forEach(function(messageUser) {
+              if (messageUser === conversationUser) {
+                userMatches++;
+                if (messageUser !== self.currentUser.username) matchedConversationName = messageUser;
+              }
+            })
+          })
+          if (userMatches > 1) {
+            matchedConversation = conversation;
+          }        
+        })
+        if(!!matchedConversation) {
+          matchedConversation.messages.push({ sender: message.sender, messageContents: message.message, show: true })
+          var objDiv = document.getElementsByClassName(matchedConversationName)[0];
+          console.log("objDiv: ", objDiv);
+          objDiv.scrollTop = objDiv.scrollHeight;
+        } else {
+          self.conversations.push({ currentMessage: null, messages: [{ sender: message.sender, messageContents: message.message }], users: [message.sender, self.currentUser.username], show: true })
+        }
       });
     });
-  });
-
-  this.message = null;
-
-  this.sendMessage = function(conversation) {
-    self.currentUser = $auth.getPayload();
-    var privateUser = this.chatWindowName(conversation.users);
-    socket.emit("pm", { message: conversation.currentMessage, receiver: privateUser, sender: self.currentUser.username });
-    conversation.currentMessage = null;
   }
 
-  socket.on('pm', function(message) {
-    self.currentUser = $auth.getPayload();
-    var matchedConversation = null;
-    $rootScope.$evalAsync(function() {
-      self.conversations.forEach(function(conversation) {
-        var userMatches = 0;
-        conversation.users.forEach(function(user) {
-          message.users.forEach(function(messageUser) {
-            if (messageUser === user) userMatches++;
-          })
-        })
-        if (userMatches > 1) {
-          matchedConversation = conversation;
-        }        
-      })
-      if(!!matchedConversation) {
-        matchedConversation.messages.push({ sender: message.sender, messageContents: message.message, show: true })
-      } else {
-        self.conversations.push({ currentMessage: null, messages: [{ sender: message.sender, messageContents: message.message }], users: [message.sender, self.currentUser.username], show: true })
-      }
-    });
-  });
+  self.socketConnect();
+
+  this.sendMessage = function(conversation) {
+    var chatName = this.chatWindowName(conversation.users);
+    socket.emit("pm", { message: conversation.currentMessage, receiver: chatName, sender: self.currentUser.username });
+    conversation.currentMessage = null;
+  }
 
   self.currentUser = $auth.getPayload();
 
@@ -200,7 +202,7 @@ function MainController($window, $auth, $state, $rootScope, User) {
     return chatName;
   }
 
-  this.showChat = function(conversation) {
+  this.toggleChat = function(conversation) {
     conversation.show = !conversation.show;
   }
 
@@ -213,6 +215,7 @@ function MainController($window, $auth, $state, $rootScope, User) {
 
   $rootScope.$on("loggedIn", function() {
     self.currentUser = $auth.getPayload();
+    self.socketConnect();
     User.get({ id: self.currentUser._id }, function(user) {
       self.conversations = user.conversations;
       self.conversations.forEach(function(conversation) {
@@ -349,6 +352,7 @@ angular
 function formData() {
   return {
     transform: function(data) {
+      console.log("data at start of formData", data);
       var formData = new FormData();
       angular.forEach(data, function(value, key) {
         if(!!value && value._id) value = value._id;
@@ -363,7 +367,7 @@ function formData() {
           }
         }
       });
-
+      console.log("formData at end of formData", formData);
       return formData;
     }
   }
@@ -449,9 +453,10 @@ function GamePostsNewController(GamePost, Platform, Genre, $state, $auth) {
     this.new.genres = this.selectedGenres.map(function(genre) {
       return genre._id;
     });
-    this.new.owner = self.currentUser._id;
+    // this.new.owner = self.currentUser._id;
+    console.log("this.new", this.new);
     GamePost.save(this.new, function() {
-      $state.go('gamePostsIndex');
+      // $state.go('gamePostsIndex');
     });
   }
 }

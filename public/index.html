@@ -42,7 +42,7 @@
   <div class="chat-window" ng-repeat="conversation in main.conversations">
     <div ng-show="conversation.show" class="chat-box">
       <div>
-        <ul class="messages">
+        <ul class="messages {{ main.chatWindowName(conversation.users) }}">
           <li class="chat-message" ng-repeat="message in conversation.messages">{{ message.sender }}: {{ message.messageContents }}</li>
         </ul>
       </div>
@@ -51,7 +51,7 @@
         <!-- <button ng-disabled="!main.connected">Send</button> -->
       </form>
     </div>
-    <div class="chat-name" ng-click="main.showChat(conversation)">
+    <div class="chat-name" ng-click="main.toggleChat(conversation)">
       <h2 class="chat-title">{{ main.chatWindowName(conversation.users) }}</h2>
     </div>
   </div>
